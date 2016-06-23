@@ -2,7 +2,7 @@
 /* eslint max-len: 0 */
 
 import { types as tt } from "../tokenizer/types";
-import { types as ct } from '../tokenizer/context';
+import { types as ct } from "../tokenizer/context";
 import Parser from "../parser";
 
 let pp = Parser.prototype;
