@@ -275,8 +275,13 @@ pp.flowParseObjectTypeIndexer = function (node, isStatic, variance) {
   node.static = isStatic;
 
   this.expect(tt.bracketL);
-  node.id = this.flowParseObjectPropertyKey();
-  node.key = this.flowParseTypeInitialiser();
+  if (this.lookahead().type === tt.colon) {
+    node.id = this.flowParseObjectPropertyKey();
+    node.key = this.flowParseTypeInitialiser();
+  } else {
+    node.id = null;
+    node.key = this.flowParseType();
+  }
   this.expect(tt.bracketR);
   node.value = this.flowParseTypeInitialiser();
   node.variance = variance;
