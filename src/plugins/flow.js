@@ -706,12 +706,25 @@ pp.flowParsePrefixType = function () {
   }
 };
 
+pp.flowParseAnonFunctionWithoutParens = function () {
+  const param = this.flowParsePrefixType();
+  if (!this.state.noAnonFunctionType && this.eat(tt.arrow)) {
+    const node  = this.startNodeAt(param.start, param.loc);
+    node.params = [this.reinterpretTypeAsFunctionTypeParam(param)];
+    node.rest = null;
+    node.returnType = this.flowParseType();
+    node.typeParameters = null;
+    return this.finishNode(node, "FunctionTypeAnnotation");
+  }
+  return param;
+};
+
 pp.flowParseIntersectionType = function () {
   let node = this.startNode();
-  let type = this.flowParsePrefixType();
+  let type = this.flowParseAnonFunctionWithoutParens();
   node.types = [type];
   while (this.eat(tt.bitwiseAND)) {
-    node.types.push(this.flowParsePrefixType());
+    node.types.push(this.flowParseAnonFunctionWithoutParens());
   }
   return node.types.length === 1 ? type : this.finishNode(node, "IntersectionTypeAnnotation");
 };
